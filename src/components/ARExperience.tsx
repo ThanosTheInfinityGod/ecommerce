@@ -17,7 +17,7 @@ export default function ARExperience({ modelUrl }: { modelUrl: string }) {
     let scene: THREE.Scene
     let camera: THREE.PerspectiveCamera
     let model: THREE.Object3D
-    let controller: THREE.Object3D
+    let controller: THREE.Group
 
     const init = () => {
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
@@ -37,10 +37,14 @@ export default function ARExperience({ modelUrl }: { modelUrl: string }) {
       scene.add(light)
 
       controller = renderer.xr.getController(0)
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (controller as any).addEventListener('select', onSelect)
-
+      controller.addEventListener('select', () => {
+        if (model) {
+          const newModel = model.clone()
+          newModel.position.set(0, 0, -0.5).applyMatrix4(controller.matrixWorld)
+          newModel.quaternion.setFromRotationMatrix(controller.matrixWorld)
+          scene.add(newModel)
+        }
+      })
       scene.add(controller)
 
       const loader = new GLTFLoader()
@@ -60,15 +64,6 @@ export default function ARExperience({ modelUrl }: { modelUrl: string }) {
       renderer.setAnimationLoop(() => {
         renderer.render(scene, camera)
       })
-    }
-
-    const onSelect = () => {
-      if (model) {
-        const newModel = model.clone()
-        newModel.position.set(0, 0, -0.5).applyMatrix4(controller.matrixWorld)
-        newModel.quaternion.setFromRotationMatrix(controller.matrixWorld)
-        scene.add(newModel)
-      }
     }
 
     init()
