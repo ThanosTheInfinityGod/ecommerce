@@ -37,7 +37,10 @@ export default function ARExperience({ modelUrl }: { modelUrl: string }) {
       scene.add(light)
 
       controller = renderer.xr.getController(0)
-      ;(controller as any).addEventListener('select', onSelect)
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (controller as any).addEventListener('select', onSelect)
+
       scene.add(controller)
 
       const loader = new GLTFLoader()
