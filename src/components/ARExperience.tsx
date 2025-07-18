@@ -36,8 +36,8 @@ export default function ARExperience({ modelUrl }: { modelUrl: string }) {
       light.position.set(0.5, 1, 0.25)
       scene.add(light)
 
-      controller = renderer.xr.getController(0)
-      controller.addEventListener('select', () => {
+      controller = renderer.xr.getController(0) as THREE.Group
+      ;(controller as any).addEventListener('select', () => {
         if (model) {
           const newModel = model.clone()
           newModel.position.set(0, 0, -0.5).applyMatrix4(controller.matrixWorld)
