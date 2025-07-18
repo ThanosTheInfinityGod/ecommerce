@@ -37,9 +37,7 @@ export default function ARExperience({ modelUrl }: { modelUrl: string }) {
       scene.add(light)
 
       controller = renderer.xr.getController(0) as THREE.Group
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (controller as any).addEventListener('select', () => {
+      controller.addEventListener('select', () => {
         if (model) {
           const newModel = model.clone()
           newModel.position.set(0, 0, -0.5).applyMatrix4(controller.matrixWorld)
@@ -47,7 +45,6 @@ export default function ARExperience({ modelUrl }: { modelUrl: string }) {
           scene.add(newModel)
         }
       })
-
       scene.add(controller)
 
       const loader = new GLTFLoader()
@@ -72,11 +69,9 @@ export default function ARExperience({ modelUrl }: { modelUrl: string }) {
     init()
 
     return () => {
-      if (renderer) {
-        renderer.setAnimationLoop(null)
-        renderer.dispose()
-        if (container) container.removeChild(renderer.domElement)
-      }
+      renderer?.setAnimationLoop(null)
+      renderer?.dispose()
+      if (container) container.innerHTML = ''
       const arButton = document.body.querySelector('button[style*="AR"]')
       if (arButton) arButton.remove()
     }
